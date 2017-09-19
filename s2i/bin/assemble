@@ -22,5 +22,9 @@ fi
 echo "---> Installing application source..."
 cp -Rf /tmp/src/. ./
 
+#move any configuration files to the appropriate location
+mv conf.d/* ../etc/conf.d
+rm -rf conf.d
+
 echo "---> Building application from source..."
 # TODO: Add build steps for your application, eg npm install, bundle install, pip install, etc.
