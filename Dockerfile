@@ -29,11 +29,17 @@ RUN yum update -y && yum install -y libaio && yum clean all -y
 
 RUN mkdir $ORACLE_BASE
 
+
+
 # TODO (optional): Copy the builder files into /opt/app-root
 # COPY ./<builder_folder>/ /opt/app-root/
 
+#Download the lastest modowa
+RUN wget https://oss.oracle.com/projects/mod_owa/dist/files/unix_all.tgz && \
+    mv unix_all.tgz $ORACLE_BASE/
+
 #Copy over the files we need
-COPY $MODOWA_PKG $CLIENT_INSTALL $ORACLE_BASE/
+COPY $CLIENT_INSTALL $ORACLE_BASE/
 
 
 #Unzip and build the shit we need
