@@ -18,6 +18,8 @@ ENV MODOWA_PKG=unix_all.tgz \
     CLIENT_INSTALL=instantclient.tar \
     ORACLE_BASE=/opt/oracle \
     ORACLE_HOME=/opt/oracle/instantclient_12_1 \
+    TNS_ADMIN=/opt/oracle/tnsadmin \
+    WALLET_HOME=/opt/oracle/wallet \
     LD_LIBRARY_PATH=/opt/oracle/instantclient_12_1:$LD_LIBRARY_PATH \
     HTTPD_CONF=/etc/apache2/apache2.conf \
     MOD_LOC=/etc/apache2/mods-available \
@@ -27,7 +29,9 @@ USER root
 # TODO: Install required packages here:
 RUN yum update -y && yum install -y libaio && yum clean all -y
 
-RUN mkdir $ORACLE_BASE
+RUN mkdir $ORACLE_BASE && \
+    mkdir $TNS_ADMIN && \
+    mkdir $WALLET_HOME
 
 
 
@@ -60,6 +64,8 @@ RUN cd $ORACLE_BASE && \
     rm -rf $MODOWA_PKG && \
     rm -rf modowa/
 
+#set permissions on directory
+RUN chmod a+rw $TNS_ADMIN && chmod a+rw $WALLET_HOME
 # TODO: Copy the S2I scripts to /usr/libexec/s2i, since openshift/base-centos7 image
 # sets io.openshift.s2i.scripts-url label that way, or update that label
 COPY ./s2i/bin/ /usr/libexec/s2i

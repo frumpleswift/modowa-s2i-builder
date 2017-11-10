@@ -25,6 +25,23 @@ cp -Rf /tmp/src/. ./
 #move any configuration files to the appropriate location
 mv conf.d/* ../etc/conf.d
 rm -rf conf.d
+if [ -d "tnsadmin" ]; then
+	mv tnsadmin/* $TNS_ADMIN
+	#a wallet can only be used with a tns entry...
+	if [ -d "wallet" ]; then
+	mv wallet/* $WALLET_HOME
 
+	cat <<EOF > $TNS_ADMIN/sqlnet.ora 
+WALLET_LOCATION=(SOURCE=(METHOD=FILE)(METHOD_DATA=(DIRECTORY=$WALLET_HOME)))
+
+SQLNET.WALLET_OVERRIDE = TRUE
+SSL_CLIENT_AUTHENTICATION = FALSE
+SSL_VERSION = 0
+
+EOF
+
+fi
+
+fi
 echo "---> Building application from source..."
 # TODO: Add build steps for your application, eg npm install, bundle install, pip install, etc.
